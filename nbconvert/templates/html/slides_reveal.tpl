@@ -51,7 +51,6 @@
 
 <!-- General and theme style sheets -->
 <link rel="stylesheet" href="{{resources.reveal.url_prefix}}/css/reveal.css">
-<link rel="stylesheet" href="{{resources.reveal.url_prefix}}/css/theme/beize.css" id="theme">
 
 <!-- If the query includes 'print-pdf', include the PDF print sheet -->
 <script>
