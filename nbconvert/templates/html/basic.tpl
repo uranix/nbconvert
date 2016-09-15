@@ -43,12 +43,41 @@ In&nbsp;[&nbsp;]:
 {% block output_prompt %}
 {% endblock output_prompt %}
 
-{% block input %}
+{% block input scoped %}
+{% set div_id = uuid4() %}
+{%- if cell.metadata.hideCode is defined -%}
+{%- set cell_hide = cell.metadata.hideCode -%}
+{%- else -%}
+{%- set cell_hide = false -%}
+{%- endif -%}
 <div class="inner_cell">
-    <div class="input_area">
-{{ cell.source | highlight_code(metadata=cell.metadata) }}
+{%- if cell_hide == true -%}
+    <div class="input_area spoiler_title" id="spoiler_{{div_id}}">
+{%- else -%}
+    <div class="input_area spoiler_title" id="spoiler_{{div_id}}" hidden>
+{%- endif -%}
+   <div class="highlight hl-ipython3">
+   <span class="n">Show code</span>
+   </div>
+   </div>
+{%- if cell_hide == true -%}
+   <div class="input_area spoiler_code" id="code_{{div_id}}" hidden>
+{%- else -%}
+   <div class="input_area spoiler_code" id="code_{{div_id}}">
+{%- endif -%}
+   {{ cell.source | highlight_code(metadata=cell.metadata) }}
+   </div>
 </div>
-</div>
+<script type="text/javascript">
+$('#spoiler_{{ div_id }}').click(function() {
+   $('#spoiler_{{ div_id }}').hide();
+   $('#code_{{ div_id }}').show();
+});
+$('#code_{{ div_id }}').click(function() {
+   $('#spoiler_{{ div_id }}').show()
+   $('#code_{{ div_id }}').hide()
+});
+</script>
 {%- endblock input %}
 
 {% block output %}
@@ -73,7 +102,7 @@ In&nbsp;[&nbsp;]:
 {{ self.empty_in_prompt() }}
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-{{ cell.source  | markdown2html | strip_files_prefix }}
+{{ cell.source | markdown2html | strip_files_prefix }}
 </div>
 </div>
 </div>
